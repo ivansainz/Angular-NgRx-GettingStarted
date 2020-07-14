@@ -3,19 +3,19 @@ import {Product} from '../product';
 import * as AppState from '../../state/app.state'; // This way we can access the global application state
 
 // Extend the State interface to include the product slice
-export interface State extends AppState.State {
-  products: ProductState;
+export interface IState extends AppState.IState {
+  products: IProductState;
 }
 
-export interface ProductState {
+export interface IProductState {
   showProductCode: boolean;
   currentProduct: Product;
   products: Product[];
 }
 
-export const productReducer = createReducer<ProductState>(
-  { showProductCode: true } as ProductState,
-  on(createAction('[Product] Toggle Product Code'), (state): ProductState => {
+export const productReducer = createReducer<IProductState>(
+  { showProductCode: true } as IProductState,
+  on(createAction('[Product] Toggle Product Code'), (state): IProductState => {
     console.log('original state: ' + JSON.stringify(state));
     return {
       ...state,
