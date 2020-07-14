@@ -1,5 +1,11 @@
 import {createAction, createReducer, on} from '@ngrx/store';
 import {Product} from '../product';
+import * as AppState from '../../state/app.state'; // This way we can access the global application state
+
+// Extend the State interface to include the product slice
+export interface State extends AppState.State {
+  products: ProductState;
+}
 
 export interface ProductState {
   showProductCode: boolean;
