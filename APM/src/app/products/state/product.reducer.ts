@@ -9,13 +9,13 @@ export interface IState extends AppState.IState {
 
 export interface IProductState {
   showProductCode: boolean;
-  currentProduct: Product;
+  currentProductId: number;
   products: Product[];
 }
 
 const initialState: IProductState = {
   showProductCode: true,
-  currentProduct: null,
+  currentProductId: null,
   products: []
 };
 
@@ -28,9 +28,15 @@ export const getShowProductCode = createSelector(
   state => state.showProductCode
 );
 
+export const getCurrentProductId = createSelector(
+  getProductFeatureState,
+  state => state.currentProductId
+);
+
 export const getCurrentProduct = createSelector(
   getProductFeatureState,
-  state => state.currentProduct
+  getCurrentProductId,
+  (state, currentProductId) => state.products.find(p => p.id === currentProductId)
 );
 
 export const getProducts = createSelector(
