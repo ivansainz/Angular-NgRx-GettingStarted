@@ -6,7 +6,7 @@ import { Product } from '../product';
 import { ProductService } from '../product.service';
 
 import {Store} from '@ngrx/store';
-import {getShowProductCode, IState} from '../state/product.reducer';
+import {getCurrentProduct, getShowProductCode, IState} from '../state/product.reducer';
 import * as ProductActions from '../state/product.actions';
 
 @Component({
@@ -31,7 +31,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
     private productService: ProductService) { }
 
   ngOnInit(): void {
-    this.sub = this.productService.selectedProductChanges$.subscribe(
+    // TODO Unsubscribe
+    this.store.select(getCurrentProduct).subscribe(
       currentProduct => this.selectedProduct = currentProduct
     );
 
@@ -40,6 +41,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
       error: err => this.errorMessage = err
     });
 
+    // TODO Unsubscribe
     this.store.select(getShowProductCode).subscribe(
       showProductCode => this.displayCode = showProductCode
     );
@@ -56,10 +58,11 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   newProduct(): void {
     this.productService.changeSelectedProduct(this.productService.newProduct());
+    this.store.dispatch(ProductActions.initializeCurrentProduct());
   }
 
   productSelected(product: Product): void {
-    this.productService.changeSelectedProduct(product);
+    this.store.dispatch(ProductActions.setCurrentProduct({product}));
   }
 
 }
