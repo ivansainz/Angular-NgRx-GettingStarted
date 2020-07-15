@@ -4,8 +4,10 @@ import { Subscription } from 'rxjs';
 
 import { Product } from '../product';
 import { ProductService } from '../product.service';
+
 import {Store} from '@ngrx/store';
 import {getShowProductCode, IState} from '../state/product.reducer';
+import * as ProductActions from '../state/product.actions';
 
 @Component({
   selector: 'pm-product-list',
@@ -49,7 +51,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   checkChanged(): void {
     // this.displayCode = !this.displayCode; // <= This is a local operation and doesn't interact with the store
-    this.store.dispatch({ type: '[Product] Toggle Product Code' });
+    this.store.dispatch(ProductActions.toggleProductCode());
   }
 
   newProduct(): void {
