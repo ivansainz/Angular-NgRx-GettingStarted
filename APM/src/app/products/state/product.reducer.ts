@@ -1,46 +1,41 @@
-import {createFeatureSelector, createReducer, createSelector, on} from '@ngrx/store';
-import {Product} from '../product';
+import { Product } from '../product';
 
-import * as AppState from '../../state/app.state'; // This way we can access the global application state
+/* NgRx */
+import { createReducer, on, createFeatureSelector, createSelector } from '@ngrx/store';
 import * as ProductActions from './product.actions';
+import * as AppState from '../../state/app.state';
 
-// Extend the State interface to include the product slice
-export interface IState extends AppState.IState {
-  products: IProductState;
+// Extends the app state to include the product feature.
+// This is required because products are lazy loaded.
+// So the reference to ProductState cannot be added to app.state.ts directly.
+export interface State extends AppState.State {
+  products: ProductState;
 }
 
-export interface IProductState {
+// State for this feature (Product)
+export interface ProductState {
   showProductCode: boolean;
-  currentProductId: number;
   currentProduct: Product;
   products: Product[];
 }
 
-const initialState: IProductState = {
+const initialState: ProductState = {
   showProductCode: true,
-  currentProductId: null,
   currentProduct: null,
   products: []
 };
 
-//#region selectors
-
-const getProductFeatureState = createFeatureSelector<IProductState>('products');
+// Selector functions
+const getProductFeatureState = createFeatureSelector<ProductState>('products');
 
 export const getShowProductCode = createSelector(
   getProductFeatureState,
   state => state.showProductCode
 );
 
-export const getCurrentProductId = createSelector(
-  getProductFeatureState,
-  state => state.currentProductId
-);
-
 export const getCurrentProduct = createSelector(
   getProductFeatureState,
-  getCurrentProductId,
-  (state, currentProductId) => state.products.find(p => p.id === currentProductId)
+  state => state.currentProduct
 );
 
 export const getProducts = createSelector(
@@ -48,30 +43,27 @@ export const getProducts = createSelector(
   state => state.products
 );
 
-//#endregion
-
-export const productReducer = createReducer<IProductState>(
+export const productReducer = createReducer<ProductState>(
   initialState,
-  on(ProductActions.toggleProductCode, (state): IProductState => {
-    console.log('original state: ' + JSON.stringify(state));
+  on(ProductActions.toggleProductCode, (state): ProductState => {
     return {
       ...state,
       showProductCode: !state.showProductCode
     };
   }),
-  on(ProductActions.setCurrentProduct, (state, action): IProductState => {
+  on(ProductActions.setCurrentProduct, (state, action): ProductState => {
     return {
       ...state,
       currentProduct: action.product
     };
   }),
-  on(ProductActions.clearCurrentProduct, (state): IProductState => {
+  on(ProductActions.clearCurrentProduct, (state): ProductState => {
     return {
       ...state,
       currentProduct: null
     };
   }),
-  on(ProductActions.initializeCurrentProduct, (state): IProductState => {
+  on(ProductActions.initializeCurrentProduct, (state): ProductState => {
     return {
       ...state,
       currentProduct: {

@@ -7,8 +7,8 @@ import { GenericValidator } from '../../shared/generic-validator';
 import { NumberValidators } from '../../shared/number.validator';
 
 /* NgRx */
-import {Store} from '@ngrx/store';
-import {IState, getCurrentProduct} from '../state/product.reducer';
+import { Store } from '@ngrx/store';
+import { State, getCurrentProduct } from '../state/product.reducer';
 import * as ProductActions from '../state/product.actions';
 
 @Component({
@@ -24,10 +24,10 @@ export class ProductEditComponent implements OnInit {
 
   // Use with the generic validation message class
   displayMessage: { [key: string]: string } = {};
-  private readonly validationMessages: { [key: string]: { [key: string]: string } };
+  private validationMessages: { [key: string]: { [key: string]: string } };
   private genericValidator: GenericValidator;
 
-  constructor(private store: Store<IState>, private fb: FormBuilder, private productService: ProductService) {
+  constructor(private store: Store<State>, private fb: FormBuilder, private productService: ProductService) {
 
     // Defines all of the validation messages for the form.
     // These could instead be retrieved from a file or database.
@@ -60,7 +60,7 @@ export class ProductEditComponent implements OnInit {
     });
 
     // Watch for changes to the currently selected product
-    // TODO Unsubscribe
+    // TODO: Unsubscribe
     this.store.select(getCurrentProduct).subscribe(
       currentProduct => this.displayProduct(currentProduct)
     );
@@ -132,12 +132,12 @@ export class ProductEditComponent implements OnInit {
 
         if (product.id === 0) {
           this.productService.createProduct(product).subscribe({
-            next: p => this.store.dispatch(ProductActions.setCurrentProduct({product: p})),
+            next: p => this.store.dispatch(ProductActions.setCurrentProduct({ product: p })),
             error: err => this.errorMessage = err
           });
         } else {
           this.productService.updateProduct(product).subscribe({
-            next: p => this.store.dispatch(ProductActions.setCurrentProduct({product: p})),
+            next: p => this.store.dispatch(ProductActions.setCurrentProduct({ product: p })),
             error: err => this.errorMessage = err
           });
         }

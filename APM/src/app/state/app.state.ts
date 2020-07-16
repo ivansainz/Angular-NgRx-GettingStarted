@@ -1,6 +1,7 @@
-// import {ProductState} from '../products/state/product.reducer'; => Removed because this causes the module to be loaded (not lazy loaded)
+import { UserState } from '../user/state/user.reducer';
 
-export interface IState {
-  // products: ProductState; => Removed because Product is lazy loaded
-  user: any;
+// Representation of the entire app state
+// Extended by lazy loaded modules
+export interface State {
+  user: UserState;
 }
